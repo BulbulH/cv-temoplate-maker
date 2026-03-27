@@ -1,0 +1,5 @@
+{
+  "name": "Biodata Generator",
+  "description": "A tool to create beautiful and structured marriage CVs (Biodata) in different formats.",
+  "requestFramePermissions": []
+}
