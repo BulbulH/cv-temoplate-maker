@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import * as htmlToImage from 'html-to-image';
+import jsPDF from 'jspdf';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,7 +58,59 @@ const initialData: Biodata = {
 
 export default function App() {
   const [data, setData] = useState<Biodata>(initialData);
+  const [isGenerating, setIsGenerating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const downloadPDF = async () => {
+    if (!contentRef.current) return;
+    
+    try {
+      setIsGenerating(true);
+      
+      // We want to capture the full height of the content, 
+      // even if it's clipped in the UI by overflow-hidden.
+      // html-to-image is generally more accurate for complex CSS.
+      
+      const dataUrl = await htmlToImage.toPng(contentRef.current, {
+        quality: 1.0,
+        pixelRatio: 2, // Higher resolution
+        backgroundColor: '#ffffff',
+        style: {
+          overflow: 'visible', // Ensure we don't clip during capture
+          borderRadius: '0', // Remove border radius for the PDF edges
+          border: 'none',
+          boxShadow: 'none'
+        }
+      });
+      
+      // Create a temporary image to get dimensions
+      const img = new Image();
+      img.src = dataUrl;
+      
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+      
+      const imgWidth = img.width;
+      const imgHeight = img.height;
+      
+      // Create PDF with exact dimensions of the captured image
+      const pdf = new jsPDF({
+        orientation: imgWidth > imgHeight ? 'l' : 'p',
+        unit: 'px',
+        format: [imgWidth, imgHeight]
+      });
+      
+      pdf.addImage(dataUrl, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`${data.fullName.replace(/\s+/g, '_')}_Biodata.pdf`);
+      
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -235,9 +289,23 @@ export default function App() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between print:hidden">
             <h2 className="text-xl font-semibold text-slate-900">Preview</h2>
-            <Button onClick={() => window.print()} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
-              <Printer className="w-4 h-4" /> Print / Save PDF
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={downloadPDF} 
+                disabled={isGenerating}
+                className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
+              >
+                <Printer className="w-4 h-4" /> 
+                {isGenerating ? 'Generating...' : 'Download PDF'}
+              </Button>
+              <Button 
+                onClick={() => window.print()} 
+                variant="outline"
+                className="gap-2"
+              >
+                <Printer className="w-4 h-4" /> Print
+              </Button>
+            </div>
           </div>
 
           <Tabs defaultValue="tech" className="w-full">
@@ -247,7 +315,7 @@ export default function App() {
               <TabsTrigger value="traditional">Traditional</TabsTrigger>
             </TabsList>
 
-            <div className="bg-white border rounded-xl shadow-sm min-h-[1000px] overflow-hidden print:border-none print:shadow-none print:m-0 print:min-h-0">
+            <div ref={contentRef} className="bg-white border rounded-xl shadow-sm min-h-[1000px] overflow-hidden print:border-none print:shadow-none print:m-0 print:min-h-0">
               
               {/* Option 1: Royal Elegance */}
               <TabsContent value="tech" className="m-0 h-full print:block">
