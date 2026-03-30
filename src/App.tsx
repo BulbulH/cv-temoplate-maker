@@ -157,138 +157,17 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-4 md:p-8 font-sans">
-      <div className="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-2 gap-8">
-        
-        {/* Left Column: Form */}
-        <div className="flex flex-col gap-6 print:hidden">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Advanced Biodata Builder</h1>
-            <p className="text-slate-500 mt-1">Tech-focused, customizable marriage CV generator.</p>
-          </div>
-
-          <ScrollArea className="h-[calc(100vh-140px)] pr-4">
-            <div className="space-y-6 pb-8">
-              
-              {/* Photo Upload */}
-              <Card>
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2"><User className="w-5 h-5"/> Profile Photo</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-6">
-                    <div className="w-24 h-24 rounded-full bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden">
-                      {data.photo ? <img src={data.photo} alt="Profile" className="w-full h-full object-cover" /> : <User className="w-8 h-8 text-slate-400" />}
-                    </div>
-                    <div className="space-y-2">
-                      <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handlePhotoUpload} />
-                      <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="gap-2">
-                        <Upload className="w-4 h-4" /> Upload Photo
-                      </Button>
-                      <p className="text-xs text-slate-500">Square image recommended.</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Personal Details */}
-              <Card>
-                <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><User className="w-5 h-5"/> Personal Details</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {renderField('Full Name', 'fullName', 'e.g. John Doe')}
-                  {renderField('Date of Birth & Age', 'dobAge', 'e.g. 15 Aug 1996 (28 Years)')}
-                  {renderField('Height', 'height', 'e.g. 5 feet 8 inches')}
-                  {renderField('Blood Group', 'bloodGroup', 'e.g. O+')}
-                  {renderField('Religion & Sect', 'religionSect', 'e.g. Islam (Sunni)')}
-                  {renderField('Marital Status', 'maritalStatus', 'e.g. Never Married')}
-                </CardContent>
-              </Card>
-
-              {/* Tech & Profession */}
-              <Card>
-                <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><Code className="w-5 h-5"/> Profession & Tech Profile</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {renderField('Current Profession', 'currentProfession', 'e.g. Software Engineer')}
-                  {renderField('Company Name', 'companyName', 'e.g. Google')}
-                  {renderField('Income (Optional)', 'income', 'e.g. Standard IT Scale')}
-                  {renderField('Portfolio / Links', 'portfolioLinks', 'e.g. github.com/user')}
-                  <div className="md:col-span-2">
-                    {renderField('Technical Skills', 'techSkills', 'e.g. React, Node.js, Python (Comma separated)', true)}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Education (Dynamic) */}
-              <Card>
-                <CardHeader className="pb-4 flex flex-row items-center justify-between">
-                  <CardTitle className="flex items-center gap-2"><GraduationCap className="w-5 h-5"/> Education</CardTitle>
-                  <Button onClick={addEdu} size="sm" variant="outline" className="gap-1"><Plus className="w-4 h-4"/> Add Degree</Button>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {data.education.map((edu, index) => (
-                    <div key={edu.id} className="relative p-4 border rounded-lg bg-slate-50/50">
-                      <Button onClick={() => removeEdu(edu.id)} variant="ghost" size="icon" className="absolute top-2 right-2 text-red-500 hover:text-red-700 hover:bg-red-50">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-8">
-                        <div className="space-y-1.5">
-                          <Label>Degree / Exam</Label>
-                          <Input value={edu.degree} onChange={e => updateEdu(edu.id, 'degree', e.target.value)} placeholder="e.g. BSc in CSE" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label>Institution</Label>
-                          <Input value={edu.institution} onChange={e => updateEdu(edu.id, 'institution', e.target.value)} placeholder="e.g. BUET" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label>Passing Year</Label>
-                          <Input value={edu.year} onChange={e => updateEdu(edu.id, 'year', e.target.value)} placeholder="e.g. 2019" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label>Result (CGPA/GPA)</Label>
-                          <Input value={edu.result} onChange={e => updateEdu(edu.id, 'result', e.target.value)} placeholder="e.g. 3.85" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  {data.education.length === 0 && <p className="text-sm text-slate-500 text-center py-4">No education added.</p>}
-                </CardContent>
-              </Card>
-
-              {/* Family Background */}
-              <Card>
-                <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><Heart className="w-5 h-5"/> Family Background</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {renderField("Father's Name & Occ.", 'fatherNameOcc', 'e.g. Mr. Smith (Retired)')}
-                  {renderField("Mother's Name & Occ.", 'motherNameOcc', 'e.g. Mrs. Smith (Homemaker)')}
-                  <div className="md:col-span-2">{renderField('Siblings', 'siblings', 'e.g. 1 Brother, 1 Sister', true)}</div>
-                  {renderField('Home District', 'homeDistrict', 'e.g. Dhaka')}
-                  {renderField('Current Residence', 'currentResidence', 'e.g. Dhanmondi, Dhaka')}
-                </CardContent>
-              </Card>
-
-              {/* Personality & Expectations */}
-              <Card>
-                <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><Activity className="w-5 h-5"/> Personality & Expectations</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-1 gap-4">
-                  {renderField('About Myself', 'aboutMyself', 'Describe yourself...', true)}
-                  {renderField('Hobbies', 'hobbies', 'e.g. Coding, Traveling')}
-                  <Separator className="my-2" />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {renderField('Partner Age Diff.', 'partnerAgeDiff', 'e.g. 22 to 26 years')}
-                    {renderField('Partner Education', 'partnerEducation', 'e.g. Minimum Graduate')}
-                    {renderField('Partner Profession', 'partnerProfession', 'e.g. Any respectable profession')}
-                    {renderField('Other Qualities', 'partnerOther', 'e.g. Religious, understanding...')}
-                  </div>
-                </CardContent>
-              </Card>
-
+      <div className="max-w-[1600px] mx-auto">
+        <Tabs defaultValue="editor" className="w-full">
+          <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-xl border shadow-sm sticky top-0 z-50 print:hidden">
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 hidden md:block">Biodata Builder</h1>
+              <TabsList className="grid w-[200px] grid-cols-2">
+                <TabsTrigger value="editor">Editor</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+              </TabsList>
             </div>
-          </ScrollArea>
-        </div>
-
-        {/* Right Column: Preview */}
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between print:hidden">
-            <h2 className="text-xl font-semibold text-slate-900">Preview</h2>
+            
             <div className="flex gap-2">
               <Button 
                 onClick={downloadPDF} 
@@ -308,14 +187,154 @@ export default function App() {
             </div>
           </div>
 
-          <Tabs defaultValue="tech" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 print:hidden mb-4">
-              <TabsTrigger value="tech">Tech Professional</TabsTrigger>
-              <TabsTrigger value="modern">Modern Clean</TabsTrigger>
-              <TabsTrigger value="traditional">Traditional</TabsTrigger>
-            </TabsList>
+          <TabsContent value="editor" className="mt-0 focus-visible:outline-none">
+            <div className="flex flex-col gap-6">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Biodata Editor</h1>
+                <p className="text-slate-500 mt-1">Fill in your details to generate a professional marriage CV.</p>
+              </div>
 
-            <div ref={contentRef} className="bg-white border rounded-xl shadow-sm min-h-[1000px] overflow-hidden print:border-none print:shadow-none print:m-0 print:min-h-0">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  {/* Photo Upload */}
+                  <Card>
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center gap-2"><User className="w-5 h-5"/> Profile Photo</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-6">
+                        <div className="w-24 h-24 rounded-full bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden">
+                          {data.photo ? <img src={data.photo} alt="Profile" className="w-full h-full object-cover" /> : <User className="w-8 h-8 text-slate-400" />}
+                        </div>
+                        <div className="space-y-2">
+                          <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handlePhotoUpload} />
+                          <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="gap-2">
+                            <Upload className="w-4 h-4" /> Upload Photo
+                          </Button>
+                          <p className="text-xs text-slate-500">Square image recommended.</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Personal Details */}
+                  <Card>
+                    <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><User className="w-5 h-5"/> Personal Details</CardTitle></CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {renderField('Full Name', 'fullName', 'e.g. John Doe')}
+                      {renderField('Date of Birth & Age', 'dobAge', 'e.g. 15 Aug 1996 (28 Years)')}
+                      {renderField('Height', 'height', 'e.g. 5 feet 8 inches')}
+                      {renderField('Blood Group', 'bloodGroup', 'e.g. O+')}
+                      {renderField('Religion & Sect', 'religionSect', 'e.g. Islam (Sunni)')}
+                      {renderField('Marital Status', 'maritalStatus', 'e.g. Never Married')}
+                    </CardContent>
+                  </Card>
+
+                  {/* Tech & Profession */}
+                  <Card>
+                    <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><Code className="w-5 h-5"/> Profession & Tech Profile</CardTitle></CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {renderField('Current Profession', 'currentProfession', 'e.g. Software Engineer')}
+                      {renderField('Company Name', 'companyName', 'e.g. Google')}
+                      {renderField('Income (Optional)', 'income', 'e.g. Standard IT Scale')}
+                      {renderField('Portfolio / Links', 'portfolioLinks', 'e.g. github.com/user')}
+                      <div className="md:col-span-2">
+                        {renderField('Technical Skills', 'techSkills', 'e.g. React, Node.js, Python (Comma separated)', true)}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Education (Dynamic) */}
+                  <Card>
+                    <CardHeader className="pb-4 flex flex-row items-center justify-between">
+                      <CardTitle className="flex items-center gap-2"><GraduationCap className="w-5 h-5"/> Education</CardTitle>
+                      <Button onClick={addEdu} size="sm" variant="outline" className="gap-1"><Plus className="w-4 h-4"/> Add Degree</Button>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {data.education.map((edu, index) => (
+                        <div key={edu.id} className="relative p-4 border rounded-lg bg-slate-50/50">
+                          <Button onClick={() => removeEdu(edu.id)} variant="ghost" size="icon" className="absolute top-2 right-2 text-red-500 hover:text-red-700 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-8">
+                            <div className="space-y-1.5">
+                              <Label>Degree / Exam</Label>
+                              <Input value={edu.degree} onChange={e => updateEdu(edu.id, 'degree', e.target.value)} placeholder="e.g. BSc in CSE" />
+                            </div>
+                            <div className="space-y-1.5">
+                              <Label>Institution</Label>
+                              <Input value={edu.institution} onChange={e => updateEdu(edu.id, 'institution', e.target.value)} placeholder="e.g. BUET" />
+                            </div>
+                            <div className="space-y-1.5">
+                              <Label>Passing Year</Label>
+                              <Input value={edu.year} onChange={e => updateEdu(edu.id, 'year', e.target.value)} placeholder="e.g. 2019" />
+                            </div>
+                            <div className="space-y-1.5">
+                              <Label>Result (CGPA/GPA)</Label>
+                              <Input value={edu.result} onChange={e => updateEdu(edu.id, 'result', e.target.value)} placeholder="e.g. 3.85" />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {data.education.length === 0 && <p className="text-sm text-slate-500 text-center py-4">No education added.</p>}
+                    </CardContent>
+                  </Card>
+
+                  {/* Family Background */}
+                  <Card>
+                    <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><Heart className="w-5 h-5"/> Family Background</CardTitle></CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {renderField("Father's Name & Occ.", 'fatherNameOcc', 'e.g. Mr. Smith (Retired)')}
+                      {renderField("Mother's Name & Occ.", 'motherNameOcc', 'e.g. Mrs. Smith (Homemaker)')}
+                      <div className="md:col-span-2">{renderField('Siblings', 'siblings', 'e.g. 1 Brother, 1 Sister', true)}</div>
+                      {renderField('Home District', 'homeDistrict', 'e.g. Dhaka')}
+                      {renderField('Current Residence', 'currentResidence', 'e.g. Dhanmondi, Dhaka')}
+                    </CardContent>
+                  </Card>
+
+                  {/* Personality & Expectations */}
+                  <Card>
+                    <CardHeader className="pb-4"><CardTitle className="flex items-center gap-2"><Activity className="w-5 h-5"/> Personality & Expectations</CardTitle></CardHeader>
+                    <CardContent className="grid grid-cols-1 gap-4">
+                      {renderField('About Myself', 'aboutMyself', 'Describe yourself...', true)}
+                      {renderField('Hobbies', 'hobbies', 'e.g. Coding, Traveling')}
+                      <Separator className="my-2" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {renderField('Partner Age Diff.', 'partnerAgeDiff', 'e.g. 22 to 26 years')}
+                        {renderField('Partner Education', 'partnerEducation', 'e.g. Minimum Graduate')}
+                        {renderField('Partner Profession', 'partnerProfession', 'e.g. Any respectable profession')}
+                        {renderField('Other Qualities', 'partnerOther', 'e.g. Religious, understanding...')}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="preview" className="mt-0 focus-visible:outline-none">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-slate-900">Live Preview (Desktop View)</h2>
+                <div className="text-sm text-slate-500 italic">Forced 1200px width for screenshot accuracy. Scroll horizontally if needed.</div>
+              </div>
+
+              <Tabs defaultValue="tech" className="w-full">
+                <TabsList className="grid w-full max-w-md grid-cols-3 mb-4">
+                  <TabsTrigger value="tech">Tech Professional</TabsTrigger>
+                  <TabsTrigger value="modern">Modern Clean</TabsTrigger>
+                  <TabsTrigger value="traditional">Traditional</TabsTrigger>
+                </TabsList>
+
+                {/* Forced Desktop Width Container */}
+                <div className="w-full overflow-x-auto pb-8">
+                  <div 
+                    ref={contentRef} 
+                    className="bg-white border rounded-xl shadow-lg overflow-hidden print:border-none print:shadow-none print:m-0"
+                    style={{ width: '900px', minHeight: '1000px' }}
+                  >
               
               {/* Option 1: Royal Elegance */}
               <TabsContent value="tech" className="m-0 h-full print:block">
@@ -327,7 +346,7 @@ export default function App() {
                   <div className="relative bg-gradient-to-r from-teal-800 via-emerald-800 to-teal-900 rounded-b-[4rem] shadow-lg print:shadow-none">
                     <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent rounded-b-[4rem]"></div>
                     <div className="pt-12 pb-28 px-8 text-center relative z-10">
-                      <h1 className="text-4xl md:text-6xl font-bold text-white mb-2 tracking-wide font-serif">{data.fullName}</h1>
+                      <h1 className="text-6xl font-bold text-white mb-2 tracking-wide font-serif">{data.fullName}</h1>
                       <p className="text-teal-200 text-lg italic font-sans">{data.currentProfession} at {data.companyName}</p>
                     </div>
                   </div>
@@ -356,7 +375,7 @@ export default function App() {
                       <span className="bg-teal-50 text-teal-800 px-4 py-1.5 rounded-full text-sm border border-teal-100 shadow-sm flex items-center gap-1"><User className="w-4 h-4"/> {data.height} • {data.bloodGroup}</span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div className="grid grid-cols-2 gap-10">
                       
                       {/* Left Column */}
                       <div className="space-y-10">
@@ -463,7 +482,7 @@ export default function App() {
 
                     <div className="p-10 space-y-10">
                       {/* Grid 1: Personal & Family */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="grid grid-cols-2 gap-8">
                         <div className="bg-pink-50/50 p-6 rounded-3xl border border-pink-100/50">
                           <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><User className="w-5 h-5 text-pink-500"/> Personal Details</h3>
                           <ul className="space-y-2 text-sm text-slate-600">
@@ -488,7 +507,7 @@ export default function App() {
                       </div>
 
                       {/* Grid 2: Education & Tech */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="grid grid-cols-2 gap-8">
                         <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
                           <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><GraduationCap className="w-5 h-5 text-pink-500"/> Education</h3>
                           <div className="space-y-4">
@@ -532,7 +551,7 @@ export default function App() {
                         <Separator className="my-6 bg-pink-200" />
                         <div>
                           <h3 className="text-lg font-bold text-slate-800 mb-4">Partner Preferences</h3>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-600">
+                          <div className="grid grid-cols-2 gap-4 text-sm text-slate-600">
                             <div><strong className="text-slate-800 block">Age Difference</strong> {data.partnerAgeDiff}</div>
                             <div><strong className="text-slate-800 block">Education</strong> {data.partnerEducation}</div>
                             <div><strong className="text-slate-800 block">Profession</strong> {data.partnerProfession}</div>
@@ -554,19 +573,19 @@ export default function App() {
                   <div className="absolute top-40 right-10 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 pointer-events-none z-[-1]"></div>
                   <div className="absolute -bottom-8 left-40 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 pointer-events-none z-[-1]"></div>
 
-                  <div className="max-w-4xl mx-auto">
+                  <div className="w-full">
                     {/* Header Glass Card */}
-                    <div className="bg-white/60 backdrop-blur-xl border border-white/80 p-8 rounded-[2.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] mb-8 flex flex-col md:flex-row items-center gap-8 print:shadow-none print:border-slate-200">
+                    <div className="bg-white/60 backdrop-blur-xl border border-white/80 p-8 rounded-[2.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] mb-8 flex flex-row items-center gap-8 print:shadow-none print:border-slate-200">
                       {data.photo && (
                         <div className="shrink-0 p-1.5 bg-gradient-to-tr from-indigo-400 via-purple-400 to-pink-400 rounded-full">
                           <img src={data.photo} alt="Profile" className="w-36 h-36 rounded-full object-cover border-4 border-white" />
                         </div>
                       )}
-                      <div className="text-center md:text-left">
+                      <div className="text-left">
                         <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-800 to-purple-800 mb-2 font-serif">{data.fullName}</h1>
                         <p className="text-lg font-medium text-slate-700">{data.currentProfession}</p>
                         <p className="text-slate-500">{data.companyName}</p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-4">
+                        <div className="flex flex-wrap justify-start gap-2 mt-4">
                           <span className="bg-white/80 px-3 py-1 rounded-full text-xs font-semibold text-indigo-700 border border-indigo-100">{data.dobAge}</span>
                           <span className="bg-white/80 px-3 py-1 rounded-full text-xs font-semibold text-purple-700 border border-purple-100">{data.religionSect}</span>
                           <span className="bg-white/80 px-3 py-1 rounded-full text-xs font-semibold text-pink-700 border border-pink-100">{data.maritalStatus}</span>
@@ -574,9 +593,9 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-3 gap-8">
                       {/* Left Column */}
-                      <div className="md:col-span-1 space-y-8">
+                      <div className="col-span-1 space-y-8">
                         {/* Personal Info */}
                         <div className="bg-white/60 backdrop-blur-xl border border-white/80 p-6 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] print:shadow-none print:border-slate-200">
                           <h3 className="text-sm font-bold text-indigo-800 uppercase tracking-widest mb-4">Details</h3>
@@ -605,10 +624,10 @@ export default function App() {
                       </div>
 
                       {/* Right Column */}
-                      <div className="md:col-span-2 space-y-8">
+                      <div className="col-span-2 space-y-8">
                         {/* Education & Family */}
                         <div className="bg-white/60 backdrop-blur-xl border border-white/80 p-6 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] print:shadow-none print:border-slate-200">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                          <div className="grid grid-cols-2 gap-8">
                             <div>
                               <h3 className="text-sm font-bold text-pink-800 uppercase tracking-widest mb-4">Education</h3>
                               <div className="space-y-4">
@@ -639,7 +658,7 @@ export default function App() {
                           <p className="text-sm text-slate-700 mb-6"><strong>Hobbies:</strong> {data.hobbies}</p>
 
                           <h3 className="text-sm font-bold text-purple-800 uppercase tracking-widest mb-3">Looking For</h3>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700 bg-white/40 p-4 rounded-2xl">
+                          <div className="grid grid-cols-2 gap-3 text-sm text-slate-700 bg-white/40 p-4 rounded-2xl">
                             <p><strong>Age:</strong> {data.partnerAgeDiff}</p>
                             <p><strong>Education:</strong> {data.partnerEducation}</p>
                             <p><strong>Profession:</strong> {data.partnerProfession}</p>
@@ -651,11 +670,13 @@ export default function App() {
                   </div>
                 </div>
               </TabsContent>
-
+              </div>
             </div>
           </Tabs>
         </div>
-      </div>
-    </div>
-  );
+      </TabsContent>
+    </Tabs>
+  </div>
+</div>
+);
 }
